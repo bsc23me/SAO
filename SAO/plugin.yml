@@ -1,0 +1,30 @@
+name: SAO
+main: me.bsc23me.sao.Main
+version: 1.0
+commands:
+  levelup:
+    description: levels player once
+  level:
+    description: tells player level
+  createspawner:
+    description: adds spawner
+  togglespawners:
+    description: toggles spawner visibility
+  monster:
+    description: spawns a mob
+  mythril:
+    description: gets player's money
+  setmythril:
+    description: sets player's money
+  addmythril:
+    description: adds new money to player's current money
+  boss:
+    description: boss variables
+  explode:
+    description: creates explosion
+  removedrop:
+    description: removes drop from mobs
+  cutscene:
+    description: under development
+  mob:
+    description: spawns a mob

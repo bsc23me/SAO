@@ -1,0 +1,158 @@
+package me.bsc23me.sao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
+
+public class Damage implements Listener{
+
+	public static Main plugin;
+	
+	static List<Material> weaponmats = new ArrayList<Material>();
+
+	static List<String> weapons = new ArrayList<String>();
+
+	private void Weapons(){
+		weapons.add("Elucidator");
+		weapons.add("Dark Repulser");
+		weapons.add("Steel Sword");
+		weapons.add("+1 Steel Sword");
+		weapons.add("+2 Steel Sword");
+		weapons.add("+3 Steel Sword");
+		weapons.add("+4 Steel Sword");
+		weapons.add("+5 Steel Sword");
+		weapons.add("+6 Steel Sword");
+		weapons.add("+7 Steel Sword");
+		weapons.add("+8 Steel Sword");
+		weapons.add("+9 Steel Sword");
+		weapons.add("+10 Steel Sword");
+	}
+
+	private void Weaponmats(){
+		weaponmats.add(Material.WOOD_SWORD);
+		weaponmats.add(Material.STONE_SWORD);
+		weaponmats.add(Material.IRON_SWORD);
+		weaponmats.add(Material.GOLD_SWORD);
+		weaponmats.add(Material.DIAMOND_SWORD);
+
+		weaponmats.add(Material.WOOD_AXE);
+		weaponmats.add(Material.STONE_AXE);
+		weaponmats.add(Material.IRON_AXE);
+		weaponmats.add(Material.GOLD_AXE);
+		weaponmats.add(Material.DIAMOND_AXE);
+
+		weaponmats.add(Material.BOW);
+	}
+
+	@EventHandler
+	public void onEntityDamageEntity(EntityDamageByEntityEvent event){
+		Weapons();
+		Weaponmats();
+		
+		//Player Damage
+		
+		if(event.getDamager() instanceof Player){
+			Player player = (Player) event.getDamager();
+			ItemStack held = player.getItemInHand();
+			for(Material m : weaponmats){
+				if(held.getType() == m){
+					if(held.hasItemMeta()){
+						String name = held.getItemMeta().getDisplayName();
+						name = ChatColor.stripColor(name);
+						for(String s : weapons){
+							if(name.equalsIgnoreCase(s)){
+								switch(s){
+								//custom blades
+								case "Elucidator":
+									event.setDamage(525);
+									break;
+								case "Dark Repulser":
+									event.setDamage(10000);
+									break;
+								//steel upgrades
+								case "Steel Sword":
+									event.setDamage(25);
+									break;
+								case "+1 Steel Sword":
+									event.setDamage(26);
+									break;
+								case "+2 Steel Sword":
+									event.setDamage(29);
+									break;
+								case "+3 Steel Sword":
+									event.setDamage(33);
+									break;
+								case "+4 Steel Sword":
+									event.setDamage(40);
+									break;
+								case "+5 Steel Sword":
+									event.setDamage(50);
+									break;
+								case "+6 Steel Sword":
+									event.setDamage(65);
+									break;
+								case "+7 Steel Sword":
+									event.setDamage(87);
+									break;
+								case "+8 Steel Sword":
+									event.setDamage(122);
+									break;
+								case "+9 Steel Sword":
+									event.setDamage(177);
+									break;
+								case "+10 Steel Sword":
+									event.setDamage(266);
+									break;
+								case "Plain Raiper":
+									break;
+								default:
+									event.setDamage(1);
+									break;
+								}
+							}
+						}
+					}else{
+
+					}
+				}else{
+
+				}
+			}
+			
+			//Monster Damage
+			
+		}else if(event.getDamager() instanceof Monster){
+			Monster monster = (Monster) event.getDamager();
+			String name = monster.getCustomName();
+			switch(name){
+			case "Wild Spider":
+				event.setDamage(20);
+				break;
+			case "Elite Spider":
+				event.setDamage(20);
+				break;
+			case "Bandit":
+				event.setDamage(20);
+				break;
+			case "Bandit Chief":
+				event.setDamage(20);
+				break;
+			case "":
+				event.setDamage(20);
+				break;
+			default:
+				event.setDamage(1);
+				break;
+			}
+		}
+	}
+
+}

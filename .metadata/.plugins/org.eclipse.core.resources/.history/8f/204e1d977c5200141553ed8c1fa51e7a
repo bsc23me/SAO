@@ -1,0 +1,157 @@
+package me.bsc23me.sao;
+
+import java.io.File;
+import java.util.List;
+import java.util.logging.Logger;
+
+import me.bsc23me.sao.magic.Heal;
+import me.bsc23me.sao.magic.Magic;
+import me.bsc23me.sao.magic.NightVision;
+import me.bsc23me.sao.magic.Nullify;
+import me.bsc23me.sao.magic.Speed;
+import me.bsc23me.sao.magic.Warp;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin{
+
+	static final Logger log = Logger.getLogger("Minecraft");
+	static PluginManager pm = Bukkit.getServer().getPluginManager();
+	static Magic magic = new Magic();
+	static BlockListener bl = new BlockListener();
+	static Magician magician = new Magician();
+	static PlayerListener pl = new PlayerListener();
+	static Damage damage = new Damage();
+	static Warp warp = new Warp();
+	static Heal heal = new Heal();
+	static MobListener ml = new MobListener();
+	static Spawner spawner = new Spawner();
+	static SkillMaster skill = new SkillMaster();
+	static Bank bank = new Bank();
+	static NightVision nv = new NightVision();
+	static Nullify nullify = new Nullify();
+	static Speed speed = new Speed();
+	static TestChangeLore tcl = new TestChangeLore();
+	static ItemTrader it = new ItemTrader();
+
+
+	YamlConfiguration yc =YamlConfiguration.loadConfiguration(getResource("config.yml"));
+	File cf = new File(getDataFolder(), "config.yml");
+
+	public void loadWorlds(){
+		if(cf.exists()){
+			yc = YamlConfiguration.loadConfiguration(cf);
+		}else{
+			yc = YamlConfiguration.loadConfiguration(getResource("config.yml"));
+		}
+	}
+
+	@Override
+	public void onEnable(){
+		if(!new File(this.getDataFolder(), "config.yml").exists()){
+			this.saveDefaultConfig();
+		}else{
+			loadWorlds();
+		}
+		this.getConfig().createSection("SAO.Weapons");
+		log.info("[SAO] has been Enabled!");
+		pm.registerEvents(ml, this);
+		pm.registerEvents(bl, this);
+		pm.registerEvents(magician, this);
+		pm.registerEvents(pl, this);
+		pm.registerEvents(damage, this);
+		pm.registerEvents(warp, this);
+		pm.registerEvents(heal, this);
+		pm.registerEvents(magic, this);
+		pm.registerEvents(spawner, this);
+		pm.registerEvents(skill, this);
+		pm.registerEvents(bank, this);
+		pm.registerEvents(nv, this);
+		pm.registerEvents(nullify, this);
+		pm.registerEvents(speed, this);
+		pm.registerEvents(tcl, this);
+		pm.registerEvents(it, this);
+	}
+
+	@Override
+	public void onDisable(){
+		log.info("[SAO] has been Disabled!");
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		if(label.equalsIgnoreCase("sync")){
+			Player player = (Player) sender;
+			File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+			FileConfiguration playerData = new YamlConfiguration();
+			try {
+				playerData.load(playerDataFile);
+				playerData.set("Player.health", CustomPlayer.health);
+			} catch (Exception e) {
+
+			}
+			return true;
+		}else if(label.equalsIgnoreCase("levelup")){
+			Player player = (Player) sender;
+			CustomPlayer.LevelUp(player);
+
+
+		}else if(label.equalsIgnoreCase("level")){
+			Player player = (Player) sender;
+			File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+			FileConfiguration playerData = new YamlConfiguration();
+			try{
+				playerData.load(playerDataFile);
+				int level = playerData.getInt("Player.level");
+				player.sendMessage("config level is "+level);
+				player.sendMessage("CustomPlayer level is "+CustomPlayer.getPlayerLevel(player));
+			}catch(Exception e){
+				player.sendMessage(ChatColor.RED+"Error: Could not load your player data!");
+			}
+		}else if(label.equalsIgnoreCase("spawner")){
+			Player player = (Player) sender;
+			Block b = player.getLocation().getBlock();
+
+			try{
+				int r = Integer.parseInt(args[0]);
+
+				List<Block> circle = Spawner.createCircle(b, r);
+				Spawner.spawners.add(circle);
+				Spawner.saveCircles();
+			}catch(Exception e){
+				player.sendMessage(ChatColor.RED+"Warning: Radius must be number!");
+			}
+
+		}else if(label.equalsIgnoreCase("togglespawners")){
+			if(args[0].equalsIgnoreCase("true")){
+				for(List<Block> list : Spawner.spawners){
+					for(Block b : list){
+						b.setType(Material.GLASS);
+					}
+				}
+			}else if(args[0].equalsIgnoreCase("false")){
+				for(List<Block> list : Spawner.spawners){
+					for(Block b : list){
+						b.setType(Material.AIR);
+					}
+				}
+			}else{
+				
+			}
+		}else if(label.equalsIgnoreCase("monster")){
+			Player player = (Player) sender;
+			Spawner.spawnMob(args[0], player.getLocation());
+		}
+		return false;
+	}
+}

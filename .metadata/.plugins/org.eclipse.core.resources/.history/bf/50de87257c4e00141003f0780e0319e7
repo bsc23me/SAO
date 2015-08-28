@@ -1,0 +1,96 @@
+package me.bsc23me.sao;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+public class PlayerListener implements Listener{
+	
+	public static Main plugin;
+	
+	@EventHandler
+	public void worldLimit(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		Location l = event.getTo();
+		if(l.getBlockX() < -1000|| l.getBlockX() > 1000 || l.getBlockZ() < -1000 || l.getBlockZ() > 1000){
+			if(!player.isOp()){
+				event.setCancelled(true);
+			}else{
+				
+			}
+		}else{
+			
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent event){
+		
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event){
+		Player player = event.getPlayer();
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		if(playerDataFile.exists()){
+			try {
+				playerData.load(playerDataFile);
+				player.setHealthScale(20);
+				int health = playerData.getInt("Player.health");
+				int level = playerData.getInt("Player.level");
+				CustomPlayer.setPlayerHealth(player, health);
+				CustomPlayer.setPlayerLevel(player, level);
+				
+				int maxHealth = CustomPlayer.getPlayerMaxHealth(player);
+				CustomPlayer.setPlayerMaxHealth(player, maxHealth);
+				
+			} catch (Exception e) {
+				Main.log.warning("[SAO] Failed to load "+player.getName()+"'s player data!");
+			}
+		}else{
+			try {
+				playerDataFile.createNewFile();
+				Main.log.info("[SAO] Created "+player.getName()+"'s data file!");
+				playerData.createSection("Player.health");
+				playerData.createSection("Player.money");
+				playerData.createSection("Player.level");
+				playerData.createSection("Player.xp");
+				CustomPlayer.setPlayerHealth(player, 20);
+				playerData.set("Player.health", 100);
+				playerData.set("Player.money", 0);
+				CustomPlayer.setPlayerLevel(player, 1);
+				playerData.set("Player.level", 1);
+				playerData.set("Player.xp", 0);
+				CustomPlayer.setPlayerMaxHealth(player, 100);
+				playerData.save(playerDataFile);
+				player.setHealthScale(20);
+			} catch (IOException e) {
+				Main.log.info("[SAO] File Creation failed!");
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event){
+		Player player = event.getPlayer();
+		try{
+			CustomPlayer.savePlayerHealth(player);
+			CustomPlayer.savePlayerLevel(player);
+		}catch(Exception e){
+			
+		}
+		
+	}
+
+}

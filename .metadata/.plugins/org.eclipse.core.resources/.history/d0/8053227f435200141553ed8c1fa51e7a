@@ -1,0 +1,65 @@
+package me.bsc23me.sao;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+public class ItemTrader implements Listener{
+
+	public static Main plugin;
+	
+	static Inventory inv = Bukkit.createInventory(null, 9, "Item Trader");
+	
+	public static int Modulus(int dividend, int divisor){
+		double modulus = (Math.abs(dividend) - (Math.abs(divisor) * (Math.floor(Math.abs(dividend) / Math.abs(divisor)))));
+		if(dividend > 0){
+			return (int) modulus;
+		}else{
+			modulus = modulus * -1;
+			return (int) modulus;
+		}
+	}
+	
+	public static ItemStack customItem(ItemStack item, String name, String l1){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+	
+	public static ItemStack customItem(ItemStack item, String name, String l1, String l2){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1, l2});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+	
+	@EventHandler
+	public void onEntityInteract(PlayerInteractEntityEvent event){
+		Player player = event.getPlayer();
+		Entity e = event.getRightClicked();
+		if(e instanceof HumanEntity){
+			if(((HumanEntity) e).getName().equalsIgnoreCase("Item Trader")){
+				inv.setItem(0, customItem(new ItemStack(Material.DIAMOND_BLOCK), ChatColor.AQUA+""+ChatColor.BOLD+"Warp Crystal: "+ChatColor.AQUA+""+ChatColor.UNDERLINE+ "Creasant Gulf", ChatColor.GRAY+"Teleports user to Creasant Gulf"));
+				player.openInventory(inv);
+			}
+		}
+	}
+	
+}

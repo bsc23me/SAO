@@ -1,0 +1,25 @@
+package me.bsc23me.sao;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+
+public class MobListener implements Listener{
+
+	public static Main plugin;
+	
+	@EventHandler
+	public void onMobDeath(EntityDeathEvent event){
+		LivingEntity e = event.getEntity();
+		if(e instanceof Monster || e instanceof Animals){
+			Bukkit.getServer().broadcastMessage("Mob Killed");
+			event.setDroppedExp(0);
+			event.getDrops().clear();
+		}
+	}
+	
+}

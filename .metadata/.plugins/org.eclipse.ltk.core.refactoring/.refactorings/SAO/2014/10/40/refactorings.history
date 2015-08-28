@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;Magic.java&apos; to &apos;SAO/src/me.bsc23me.sao.magic&apos;&#x0D;&#x0A;- Original project: &apos;SAO&apos;&#x0D;&#x0A;- Destination element: &apos;SAO/src/me.bsc23me.sao.magic&apos;&#x0D;&#x0A;- Original element: &apos;me.bsc23me.sao.Magic.java&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="/src&lt;me.bsc23me.sao.magic" element1="/src&lt;me.bsc23me.sao{Magic.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1412451128515" units="1" version="1.0"/>
+</session>

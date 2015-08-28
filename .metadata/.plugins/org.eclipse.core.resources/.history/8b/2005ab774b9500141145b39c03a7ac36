@@ -1,0 +1,94 @@
+package me.bsc23me.sao;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+public class AnimalTamer implements Listener{
+
+	public static Main plugin;
+	
+	static Inventory inv = Bukkit.createInventory(null, 9, "Animals");
+	
+	public static ItemStack customItem(ItemStack item, String name){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		item.setItemMeta(im);
+		return item;
+	}
+
+	public static ItemStack customItem(ItemStack item, String name, String l1){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+
+	public static ItemStack customItem(ItemStack item, String name, String l1, String l2){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1, l2});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+	
+	public static ItemStack customItem(ItemStack item, String name, String l1, String l2, String l3){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1, l2, l3});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+	
+	public void resetInv(){
+		inv.setItem(0, customItem(new ItemStack(Material.MONSTER_EGG, 1, (short) 100), ChatColor.WHITE+"Horse", ChatColor.GRAY+"Spawns a horse", ChatColor.RED+"Not Rideable", ChatColor.GREEN+"Price: 500"));
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEntityEvent event){
+		Player player = event.getPlayer();
+		Entity e = event.getRightClicked();
+		if(e instanceof HumanEntity){
+			if(((HumanEntity) e).getName().equalsIgnoreCase("Animal Tamer") || ((HumanEntity) e).getName().equalsIgnoreCase("Dunadain Tamer")){
+				resetInv();
+				player.openInventory(inv);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event){
+		Player player = (Player) event.getWhoClicked();
+		ItemStack clicked = event.getCurrentItem();
+		Inventory i = event.getInventory();
+		if(i.getName().equalsIgnoreCase("Animals")){
+			event.setCancelled(true);
+			if(clicked.getDurability() == 100){
+				if(CustomPlayer.getPlayerMoney(player) >= 500){
+					player.getInventory().addItem(customItem(new ItemStack(Material.SADDLE), ChatColor.WHITE+"Horse", ChatColor.GRAY+"Spawns a horse", ChatColor.RED+"Not Rideable"));
+					CustomPlayer.setPlayerMoney(player, CustomPlayer.getPlayerMoney(player) - 500);
+					player.closeInventory();
+				}else{
+					player.sendMessage(ChatColor.RED+"You do "+ChatColor.UNDERLINE+"NOT"+ChatColor.RED+" have enough money");
+				}
+			}
+		}
+	}
+}

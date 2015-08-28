@@ -1,0 +1,51 @@
+package me.bsc23me.sao;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+public class TestChangeLore implements Listener{
+
+	public static Main plugin;
+
+	public static ItemStack customItem(ItemStack item, String name, String l1, String l2){
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		List<String> lore = Arrays.asList(new String[] {l1, l2});
+		im.setLore(lore);
+		item.setItemMeta(im);
+		return item;
+	}
+
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent event){
+		final Player player = event.getPlayer();
+		String message = event.getMessage();
+		if(message.equalsIgnoreCase("item test")){
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin.getPlugin(Main.class), new Runnable(){
+				int i = 1;
+				public void run(){
+					player.sendMessage(""+i);
+					//player.getInventory().setItem(4, customItem(new ItemStack(Material.DIAMOND_BLOCK), "Testing", ""+i, ""));
+					if(i >= 10){
+						Bukkit.getScheduler().cancelAllTasks();
+						player.sendMessage("Task Complete!");
+					}else{
+						
+					}
+					i++;
+				}
+			}, 20, 20);
+
+		}
+	}
+
+}

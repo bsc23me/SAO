@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;me.bsc23me.sao.magic.Slowed&apos; to &apos;Slow&apos;&#x0D;&#x0A;- Original project: &apos;SAO&apos;&#x0D;&#x0A;- Original element: &apos;me.bsc23me.sao.magic.Slowed&apos;&#x0D;&#x0A;- Renamed element: &apos;me.bsc23me.sao.magic.Slow&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;Slowed&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;me.bsc23me.sao.magic{Slowed.java[Slowed" matchStrategy="1" name="Slow" qualified="false" references="true" similarDeclarations="false" stamp="1413248552266" textual="false" version="1.0"/>
+</session>

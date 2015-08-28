@@ -1,0 +1,176 @@
+package me.bsc23me.sao;
+
+import java.io.File;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+public class CustomPlayer {
+
+	static int health;
+	static int money;
+	static int level;
+	static double xp;
+	static int hollow;
+
+	public static int getPlayerHealth(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			return playerData.getInt("Player.health");
+		}catch(Exception e){
+			return 0;
+		}
+	}
+
+	public static int getPlayerMaxHealth(Player player){
+		//NOTE: lvl 1 : 100HP, lvl 100 : 100,000HP
+		
+		int level = getPlayerLevel(player);
+		double maxHpRaw = level * Math.sqrt(level) * 100;
+		int maxHp = (int) maxHpRaw;
+		return maxHp;
+		/*For 10% HP increase with level use:
+		 NOTE: lvl 1 : 100HP, lvl 100 : 1,378,061HP
+		 
+		 int level = getPlayerLevel(player);
+		 double maxHpRaw = 100 * Math.pow(1.1, level);
+		 int maxHp = (int) maxHpRaw;
+		 return maxHp;
+		 
+		 */
+	}
+
+	public static int getPlayerMoney(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			return playerData.getInt("Player.money");
+		}catch(Exception e){
+			return 0;
+		}
+	}
+
+	public static int getPlayerLevel(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			return playerData.getInt("Player.level");
+		}catch(Exception e){
+			return 0;
+		}
+	}
+
+	public static double getPlayerXp(Player player){
+		return xp;
+	}
+	
+	public static int getPlayerHollow(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			return playerData.getInt("Player.hollow");
+		}catch(Exception e){
+			return 0;
+		}
+	}
+	
+	
+
+	public static void setPlayerHealth(Player player, int amt){
+		player.setHealth(amt);
+	}
+
+	public static void setPlayerMaxHealth(Player player, int amt){
+		player.setMaxHealth(amt);
+	}
+
+	public static void setPlayerMoney(Player player, int amt){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			playerData.set("Player.money", amt);
+			playerData.save(playerDataFile);
+		}catch(Exception e){
+
+		}
+	}
+
+	public static void setPlayerLevel(Player player, int amt){
+		player.setLevel(amt);
+	}
+
+	public static void setPlayerXp(Player player, float amt){
+
+	}
+	
+	public static void setPlayerHollow(Player player, int amt){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			playerData.set("Player.money", amt);
+			playerData.save(playerDataFile);
+		}catch(Exception e){
+
+		}
+	}
+
+	public static void savePlayerHealth(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			int health = (int) player.getHealth();
+			playerData.set("Player.health", health);
+			playerData.save(playerDataFile);
+		}catch(Exception e){
+
+		}
+	}
+
+	public static void savePlayerLevel(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			int level = player.getLevel();
+			playerData.set("Player.level", level);
+			playerData.save(playerDataFile);
+		}catch(Exception e){
+
+		}
+	}
+
+	public static void LevelUp(Player player){
+		File playerDataFile = new File("plugins/SAO/players/"+player.getName()+".yml");
+		FileConfiguration playerData = new YamlConfiguration();
+		try{
+			playerData.load(playerDataFile);
+			int oldLevel;
+				oldLevel = playerData.getInt("Player.level");
+				setPlayerLevel(player, oldLevel+1);
+				int newLevel = oldLevel + 1;
+				double maxHpRaw = newLevel * Math.sqrt(newLevel) * 100;
+				int maxHp = (int) maxHpRaw;
+				setPlayerMaxHealth(player, maxHp);
+				player.sendMessage("Max HP: "+maxHp);
+				savePlayerLevel(player);
+		}catch(Exception e){
+			
+		}
+	}
+
+	public static void xpUp(Player player){
+		/*int level = getPlayerLevel(player);
+		double xp = getPlayerXp(player);*/
+
+	}
+
+}

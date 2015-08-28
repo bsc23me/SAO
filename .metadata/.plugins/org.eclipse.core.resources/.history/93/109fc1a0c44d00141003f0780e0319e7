@@ -1,0 +1,100 @@
+package me.bsc23me.sao;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+
+public class Spawner implements Listener{
+
+	public static Main plugin;
+
+	static List<List<Block>> spawners = new ArrayList<List<Block>>();
+
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		Location to = event.getTo();
+		for(List<Block> list : spawners){
+			for(Block b : list){
+				if(b.equals(to.getBlock())){
+					player.sendMessage("You have entered a circle");
+				}
+			}
+		}
+	}
+
+	public static List<Block> createCircle(Block center, int r){
+		List<Block> circle = new ArrayList<Block>();
+		World w = center.getWorld();
+		int xc = center.getX();
+		int yc = center.getY();
+		int zc = center.getZ();
+
+		for(int x = xc - r; x <= xc + r; x++){
+			for(int z = zc - r; z <= zc + r; z++){
+				double distance = ((x - xc) * (x - xc)) + ((z - zc) * (z - zc));
+				if(distance < r*r){
+					Location l = new Location(w, x, yc, z);
+					Block b = l.getBlock();
+					circle.add(b);
+				}
+			}
+		}
+		return circle;
+	}
+
+	public static void saveCircles(){
+		File spawnerAreasFile = new File("plugins/SAO/spawners.yml");
+		FileConfiguration spawnerAreas = new YamlConfiguration();
+		if(spawnerAreasFile.exists()){
+			try{
+				for(List<Block> list : spawners){
+					
+				}
+				spawnerAreas.save(spawnerAreasFile);
+			}catch(Exception e){
+				
+			}
+		}else{
+			try {
+				spawnerAreasFile.createNewFile();
+				spawnerAreas.createSection("Spawners");
+				spawnerAreas.set("Spawners", spawners);
+				spawnerAreas.save(spawnerAreasFile);
+			} catch (IOException e) {
+				
+			}
+		}
+	}
+	
+	public static void spawnMob(String mob, Location l){
+		switch(mob){
+			case "Frenzy_Boar":
+				Entity e = l.getWorld().spawnEntity(l, EntityType.PIG);
+				Creature ce = (Creature) e;
+				Location ceLoc = ce.getLocation();
+				ce.setCustomName("Frenzy Boar");
+				ce.setCustomNameVisible(true);
+				ce.setMaxHealth(50);
+				ce.setHealth(ce.getMaxHealth());
+				//ce.setTarget((LivingEntity) ce.getNearbyEntities(ceLoc.getX() + 5, ceLoc.getY() + 5, ceLoc.getZ() + 5).get(0));
+				break;
+		}
+	}
+
+}
